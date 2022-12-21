@@ -67,17 +67,21 @@ downloads:
 packages:
 - pytorch
 - torchvision
-- cudatoolkit=11.3
+- cpuonly
 - pip:
   - pytorch-lightning
   - path
   - hydra-core
   - h5py
   - tensorguard
+  - pydicom
+  - nibabel
 - python=3.9
 - pillow
 - matplotlib
 - seaborn
+- ipykernel
+- scipy
 channels:
 - pytorch
 
