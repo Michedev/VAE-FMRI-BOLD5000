@@ -8,7 +8,7 @@
 #
 # Set the 'name' key to name your project
 #
-name: deep_learning_project
+name: vae_fmri
 
 #
 # Set the 'icon' key to give your project an icon
@@ -77,6 +77,7 @@ packages:
 - python=3.9
 - pillow
 - matplotlib
+- seaborn
 channels:
 - pytorch
 
@@ -87,7 +88,6 @@ platforms:
 - win-64
 
 variables:
-  PYTHONPATH: ./
   HYDRA_FULL_ERROR: 1
 #
 # You can define multiple, named environment specs.
