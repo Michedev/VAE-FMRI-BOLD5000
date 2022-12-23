@@ -1,6 +1,6 @@
 defaults:
-  - model: ??? # <--- Fill this in
-  - dataset: mnist
+  - model: vae
+  - dataset: roi
   - optional model_dataset: ${model}-${dataset}
 
 batch_size: 32
