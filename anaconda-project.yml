@@ -49,13 +49,16 @@ commands:
     unix: |
       cd data; 
       wget https://figshare.com/ndownloader/files/12965447 -O BOLD5000_ROIs.zip; 
-      zip -d BOLD5000_ROIs.zip ROIs/CS1/h5 ROIs/CS2/h5 ROIs/CS3/h5 ROIs/CS4/h5;
+      zip --delete BOLD5000_ROIs.zip ROIs/CS1/h5 ROIs/CS2/h5 ROIs/CS3/h5 ROIs/CS4/h5;
       unzip BOLD5000_ROIs.zip; 
       rm BOLD5000_ROIs.zip;
-      mv data/ROIs/stim_lists/CSI01_stim_lists.txt data/ROIs/stim_lists/CSI1_stim_lists.txt;
-      mv data/ROIs/stim_lists/CSI02_stim_lists.txt data/ROIs/stim_lists/CSI2_stim_lists.txt;
-      mv data/ROIs/stim_lists/CSI03_stim_lists.txt data/ROIs/stim_lists/CSI3_stim_lists.txt;
-      mv data/ROIs/stim_lists/CSI04_stim_lists.txt data/ROIs/stim_lists/CSI4_stim_lists.txt;
+      mv ROIs/stim_lists/CSI01_stim_lists.txt ROIs/stim_lists/CSI1_stim_lists.txt;
+      mv ROIs/stim_lists/CSI02_stim_lists.txt ROIs/stim_lists/CSI2_stim_lists.txt;
+      mv ROIs/stim_lists/CSI03_stim_lists.txt ROIs/stim_lists/CSI3_stim_lists.txt;
+      mv ROIs/stim_lists/CSI04_stim_lists.txt ROIs/stim_lists/CSI4_stim_lists.txt;
+      wget https://www.dropbox.com/s/5ie18t4rjjvsl47/BOLD5000_Stimuli.zip?dl=1 -O BOLD5000_Stimuli.zip;
+      unzip BOLD5000_Stimuli.zip;
+      rm BOLD5000_Stimuli.zip;
   test:
     unix: pytest tests/
     env_spec: default
