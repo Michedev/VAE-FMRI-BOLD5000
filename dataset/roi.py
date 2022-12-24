@@ -3,6 +3,7 @@ from path import Path
 from scipy.io import loadmat
 import torch
 from utils.paths import ROOT
+from torchvision.io import read_image
 
 
 
@@ -60,14 +61,19 @@ class ROIDataset(Dataset):
         return dict(roi=roi_vector, img_fname=img_fname)
 
 
-class ROIDatasetImageFeatures(ROIDataset):
+class ROIDatasetImage(ROIDataset):
 
+
+    def get_image_path(self, img_fname):
+        for dataset_folder in self.images_folder.dirs():  # coco, imgnet or scene
+            img_path = dataset_folder / img_fname
+            if img_path.isfile():
+                return img_path
+        raise FileNotFoundError(f'Image {img_fname} not found in {self.images_folder}')
 
     def __getitem__(self, i):
         data = super().__getitem__(i)
-        return dict(roi=data['roi'], img=img)
+        img_path = self.get_image_path(data['img_fname'])
+        img = read_image(img_path).float() / 255
+        return dict(roi=data['roi'], img=img, img_path=img_path)
 
-
-if __name__ == '__main__':
-    dataset = ROIDataset()
-    print(dataset[0])
