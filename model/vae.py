@@ -5,12 +5,15 @@ from torch import nn
 
 class VAE(pl.LightningModule):
 
-    def __init__(self, encoder: nn.Module, decoder: nn.Module, beta: float = 1.0, opt: type[torch.optim.Optimizer] = torch.optim.Adam):
+    def __init__(self, encoder: nn.Module, decoder: nn.Module, latent_size: int,
+                 beta: float = 1.0, opt: type[torch.optim.Optimizer] = torch.optim.Adam,
+                 ):
         super().__init__()
         self.encoder = encoder
         self.decoder = decoder
         self.beta = beta
-        self.opt = opt
+        self._opt = opt
+        self.latent_size = latent_size
         self.prior = torch.distributions.Normal(0, 1)
 
     def forward(self, x):
@@ -31,13 +34,15 @@ class VAE(pl.LightningModule):
         result = self.forward(x)
         loss = self.calc_loss(x, result['x_hat'], result['posterior'])
         if self.global_step % 100 == 0:
-            self.log('loss/train_loss', loss, on_step=True, on_epoch=False, 
-                      prog_bar=True, logger=True)
+            self.log('loss/train_loss', loss, on_step=True, on_epoch=False,
+                     prog_bar=True, logger=True)
         return loss
 
     def calc_loss(self, x, x_hat, post: torch.distributions.Normal):
-        recon_loss = torch.nn.functional.mse_loss(x_hat, x, reduction='none').mean(dim=0).sum()
-        kl_loss = torch.distributions.kl_divergence(post, self.prior).mean(dim=0).sum()
+        recon_loss = torch.nn.functional.mse_loss(
+            x_hat, x, reduction='none').mean(dim=0).sum()
+        kl_loss = torch.distributions.kl_divergence(
+            post, self.prior).mean(dim=0).sum()
         loss = recon_loss + self.beta * kl_loss
         return dict(loss=loss, recon_loss=recon_loss, kl_loss=kl_loss)
 
@@ -45,6 +50,9 @@ class VAE(pl.LightningModule):
         x = batch['roi']
         result = self.forward(x)
         loss = self.calc_loss(x, result['x_hat'], result['posterior'])
-        self.log('loss/valid_loss', loss, on_step=True, on_epoch=True, 
-                  prog_bar=True, logger=True)
+        self.log('loss/valid_loss', loss, on_step=True, on_epoch=True,
+                 prog_bar=True, logger=True)
         return loss
+
+    def configure_optimizers(self):
+        return self._opt(self.parameters())
