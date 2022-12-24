@@ -4,6 +4,7 @@ from scipy.io import loadmat
 import torch
 from utils.paths import ROOT
 from torchvision.io import read_image
+import torchvision
 
 
 
@@ -63,6 +64,7 @@ class ROIDataset(Dataset):
 
 class ROIDatasetImage(ROIDataset):
 
+    resize = torchvision.transforms.Resize((224, 224))
 
     def get_image_path(self, img_fname):
         for dataset_folder in self.images_folder.dirs():  # coco, imgnet or scene
@@ -75,5 +77,6 @@ class ROIDatasetImage(ROIDataset):
         data = super().__getitem__(i)
         img_path = self.get_image_path(data['img_fname'])
         img = read_image(img_path).float() / 255
+        img = self.resize(img)
         return dict(roi=data['roi'], img=img, img_path=img_path)
 

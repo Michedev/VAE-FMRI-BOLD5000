@@ -15,3 +15,4 @@ def test_load_row_image():
     assert row['img'].dtype == torch.float32
     assert row['img'].min() >= 0
     assert row['img'].max() <= 1
+    assert row['img'].shape == (3, 224, 224)
