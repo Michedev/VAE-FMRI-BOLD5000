@@ -103,7 +103,7 @@ channels:
 - pytorch
 #
 #  cudatoolskit=11.3 is not available for osx-64
-platforms:Clean code is the commitment to coding standards, formatting, linting tools, and other checks regarding the layout of the code
+platforms:
 - linux-64
 - win-64
 
