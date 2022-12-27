@@ -38,7 +38,7 @@ def train(config: DictConfig):
     pin_memory = 'gpu' in config.accelerator
     train_dl = DataLoader(train_dataset, batch_size=config.batch_size, pin_memory=pin_memory)
     
-    monitor_metric = 'loss/train_loss_epoch'
+    monitor_metric = 'loss/train_loss'
     ckpt_callback = ModelCheckpoint('./', 'best',
                                     monitor=monitor_metric,
                                     auto_insert_metric_name=False, save_last=True)

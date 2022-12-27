@@ -35,8 +35,9 @@ class VAE(pl.LightningModule):
         result = self.forward(x)
         loss = self.calc_loss(x, result['x_hat'], result['posterior'])
         if self.global_step % 100 == 0:
-            self.log('loss/train_loss', loss, on_step=True, on_epoch=False,
-                     prog_bar=True, logger=True)
+            for k, v in loss.items():
+                self.log(f'loss/train_{k}', v, on_step=True, on_epoch=True,
+                        prog_bar=True, logger=True)
         return loss
 
     def calc_loss(self, x, x_hat, post: torch.distributions.Normal):
@@ -125,7 +126,7 @@ class ROIDecoder(pl.LightningModule):
         loss = F.binary_cross_entropy_with_logits(
             target=x, input=result['x_hat'])
         if self.global_step % 100 == 0:
-            self.log('loss/train_loss', loss, on_step=True, on_epoch=False,
+            self.log('loss/train_loss', loss, on_step=True, on_epoch=True,
                      prog_bar=True, logger=True)
         return loss
 
