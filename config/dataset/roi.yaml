@@ -1,2 +1,2 @@
-_target_: dataset.roi.ROI
+_target_: dataset.roi.ROIDataset
 user: CSI1
