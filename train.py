@@ -10,7 +10,7 @@ import omegaconf
 import os
 from utils.paths import CODE_MODEL
 
-from .dataset.roi import ROIDataset
+from dataset.roi import ROIDataset
 from math import prod
 
 
