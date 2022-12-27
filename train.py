@@ -10,6 +10,12 @@ import omegaconf
 import os
 from utils.paths import CODE_MODEL
 
+from dataset.roi import ROIDataset
+from math import prod
+
+
+OmegaConf.register_new_resolver("num_features", lambda user: ROIDataset.calc_num_features(user)[0], use_cache=True)
+OmegaConf.register_new_resolver('intprod', lambda *x: int(prod(float(el) for el in x)), use_cache=False)
 
 @hydra.main('config', 'train.yaml')
 def train(config: DictConfig):

@@ -82,17 +82,17 @@ downloads:
 # Use `anaconda-project add-packages` to add packages.
 #
 packages:
-- pytorch
+- pytorch=1.13.1
 - torchvision
-- pytorch-lightning
 - pip:
+  - pytorch-lightning
   - path
   - hydra-core
   - h5py
   - tensorguard
   - pydicom
   - nibabel
-- python=3.9
+- python=3.10
 - pillow
 - matplotlib
 - seaborn
@@ -101,10 +101,9 @@ packages:
 - pytest
 channels:
 - pytorch
-- conda-forge
 #
 #  cudatoolskit=11.3 is not available for osx-64
-platforms:
+platforms:Clean code is the commitment to coding standards, formatting, linting tools, and other checks regarding the layout of the code
 - linux-64
 - win-64
 
@@ -120,11 +119,14 @@ env_specs:
   default:
     description: Default environment spec for running commands
     packages:
-    - pytorch-cuda=11.7 
+    - pytorch-cuda=11.6
     channels: 
     - pytorch
     - nvidia
-    platforms: []
+    platforms:
+    - linux-64
+    - win-64
+
   cpu:
     description: Environment spec for running commands on CPU
     packages: 
