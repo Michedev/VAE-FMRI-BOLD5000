@@ -10,7 +10,7 @@ import omegaconf
 import os
 from utils.paths import CODE_MODEL
 
-from dataset.roi import ROIDataset
+from .dataset.roi import ROIDataset
 from math import prod
 
 
@@ -29,8 +29,7 @@ def train(config: DictConfig):
     with open('config.yaml', 'w') as f:
         omegaconf.OmegaConf.save(config, f)
     model: pl.LightningModule = hydra.utils.instantiate(config.model)
-    train_dataset: Dataset = hydra.utils.instantiate(config.dataset.train)
-    val_dataset: Dataset = hydra.utils.instantiate(config.dataset.val)
+    train_dataset: Dataset = hydra.utils.instantiate(config.dataset)
 
     CODE_MODEL.copytree('model')  # copy source code of model under experiment directory
 
@@ -38,13 +37,14 @@ def train(config: DictConfig):
 
     pin_memory = 'gpu' in config.accelerator
     train_dl = DataLoader(train_dataset, batch_size=config.batch_size, pin_memory=pin_memory)
-    val_dl = DataLoader(val_dataset, batch_size=config.batch_size, pin_memory=pin_memory)
+    
+    monitor_metric = 'loss/train_loss_epoch'
     ckpt_callback = ModelCheckpoint('./', 'best',
-                                    monitor='loss/valid_loss_epoch',
+                                    monitor=monitor_metric,
                                     auto_insert_metric_name=False, save_last=True)
     callbacks = [ckpt_callback]
     if config.early_stop:
-        callbacks.append(EarlyStopping('loss/valid_loss_epoch', min_delta=config.min_delta,
+        callbacks.append(EarlyStopping(monitor_metric, min_delta=config.min_delta,
                                        patience=config.patience))
     trainer = pl.Trainer(callbacks=callbacks, accelerator=config.accelerator, devices=config.devices,
                          gradient_clip_val=config.gradient_clip_val,

@@ -90,7 +90,7 @@ class VAEImgDecoder(pl.LightningModule):
         loss = F.binary_cross_entropy_with_logits(
             target=x, input=result['x_hat'])
         if self.global_step % 100 == 0:
-            self.log('loss/train_loss', loss, on_step=True, on_epoch=False,
+            self.log('loss/train_loss', loss, on_step=True, on_epoch=True,
                      prog_bar=True, logger=True)
         return loss
 
