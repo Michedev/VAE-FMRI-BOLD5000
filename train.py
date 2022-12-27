@@ -50,7 +50,7 @@ def train(config: DictConfig):
                          gradient_clip_val=config.gradient_clip_val,
                          gradient_clip_algorithm=config.gradient_clip_algorithm,
                          resume_from_checkpoint=ckpt)
-    trainer.fit(model, train_dl, val_dl)
+    trainer.fit(model, train_dl)
 
 
 if __name__ == '__main__':
