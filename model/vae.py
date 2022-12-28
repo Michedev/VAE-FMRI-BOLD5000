@@ -62,7 +62,7 @@ class VAE(pl.LightningModule):
 
 class VAEImgDecoder(pl.LightningModule):
 
-    def __init__(roi_encoder: nn.Module, img_decoder: nn.Module, latent_size: int,
+    def __init__(self, roi_encoder: nn.Module, img_decoder: nn.Module, latent_size: int,
                  opt: type[torch.optim.Optimizer] = torch.optim.Adam):
         super().__init__()
         self.encoder = roi_encoder

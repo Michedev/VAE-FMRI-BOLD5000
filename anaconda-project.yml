@@ -119,7 +119,7 @@ env_specs:
   default:
     description: Default environment spec for running commands
     packages:
-    - pytorch-cuda=11.6
+    - pytorch-cuda=11.7
     channels: 
     - pytorch
     - nvidia
