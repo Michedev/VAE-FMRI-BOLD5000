@@ -87,15 +87,15 @@ class VAEBroadcastDecoder(nn.Module):
         self.output_size = output_size
         
         self.decoder = nn.Sequential(
-            nn.Conv2d(input_size, 32, 3, 1),
+            nn.Conv2d(input_size, 32, 3, 1, 1),
             nn.BatchNorm2d(32),
             nn.ReLU(),
-            nn.Conv2d(32, 16, 3, 1),
+            nn.Conv2d(32, 16, 3, 1, 1),
             nn.BatchNorm2d(16),
             nn.ReLU(),
             ResidualModule(16, 16, 3, 1, 1),
             ResidualModule(16, 16, 3, 1, 1),
-            nn.Conv2d(16, output_size, 3, 1)
+            nn.Conv2d(16, output_size, 3, 1, 1)
         )
 
 
