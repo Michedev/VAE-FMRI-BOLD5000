@@ -5,6 +5,7 @@ import torch
 from utils.paths import ROOT
 from torchvision.io import read_image
 import torchvision
+from torchvision.io import ImageReadMode
 
 
 
@@ -76,7 +77,7 @@ class ROIDatasetImage(ROIDataset):
     def __getitem__(self, i):
         data = super().__getitem__(i)
         img_path = self.get_image_path(data['img_fname'])
-        img = read_image(img_path).float() / 255
+        img = read_image(img_path, ImageReadMode.RGB).float() / 255
         img = self.resize(img)
         return dict(roi=data['roi'], img=img, img_path=img_path)
 
