@@ -49,6 +49,64 @@ def vae_roi_decoder(input_size: int, output_size: int):
 
 # for image based data, use pretrained model encoder
 
+class ResidualModule(nn.Module):
+
+    def __init__(self, in_channels: int, out_channels: int,
+                 kernel_size: int, stride: int, padding: int):
+        super().__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size,
+                               stride, padding)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size,
+                               stride, padding)
+        self.bn2 = nn.BatchNorm2d(out_channels)
+        self.relu = nn.ReLU()
+        self.shortcut = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, 1, 1, 0),
+            nn.BatchNorm2d(out_channels)
+        )
+
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out += self.shortcut(x)
+        out = self.relu(out)
+        return out
+
+class VAEBroadcastDecoder(nn.Module):
+
+    def __init__(self, input_size: int, output_size: int,
+                 width: int, height: int):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.input_size = input_size
+        self.output_size = output_size
+        
+        self.decoder = nn.Sequential(
+            nn.Conv2d(input_size, 512, 3, 1),
+            nn.BatchNorm2d(512),
+            nn.ReLU(),
+            nn.Conv2d(512, 256, 3, 1),
+            nn.BatchNorm2d(256),
+            nn.ReLU(),
+            ResidualModule(256, 128, 3, 1, 1),
+            ResidualModule(128, 64, 3, 1, 1),
+            nn.Conv2d(64, 3, 3, 1)
+        )
+
+
+    def forward(self, z):
+        z = z.view(*z.shape, 1, 1)
+        # broadcast
+        z = z.repeat(1, 1, self.width, self.height)
+        x_hat = self.decoder(z)
+        return x_hat
+        
+    
 
 def vae_img_decoder(input_size: int, output_size: int):
     # input is bs x input_size

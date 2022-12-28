@@ -41,7 +41,7 @@ def main(config):
 
     print('Loaded model from checkpoint', checkpoint_path / 'best.ckpt')
 
-    img_decoder = hydra.utils.instantiate(config.decoder)
+    img_decoder = hydra.utils.instantiate(config.img_decoder)
     opt = hydra.utils.instantiate(config.opt)
 
     vae_img = VAEImgDecoder(ckpt_model.encoder, img_decoder, ckpt_model.latent_size, opt)
@@ -50,6 +50,7 @@ def main(config):
     storage_img_decoder = checkpoint_path / 'img_decoder'
     if not storage_img_decoder.exists():
         storage_img_decoder.mkdir()
+    OmegaConf.save(config, storage_img_decoder / 'config.yaml')
     callbacks = pl.callbacks.ModelCheckpoint(storage_img_decoder, 'best',
                                                     monitor=monitor_metric,
                                                     auto_insert_metric_name=False, save_last=True)

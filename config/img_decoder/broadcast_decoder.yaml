@@ -1,0 +1,5 @@
+_target_: model.encoder_decoder.VAEBroadcastDecoder
+input_size: ${model.latent_size}  # set to checkpoint model latent size
+output_size: 3  # RGB
+width: 224  # todo: replace with variables
+height: 224

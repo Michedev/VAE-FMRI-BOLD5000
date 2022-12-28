@@ -2,6 +2,7 @@ import pytorch_lightning as pl
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torchvision.utils import make_grid
 
 
 class VAE(pl.LightningModule):
@@ -92,6 +93,10 @@ class VAEImgDecoder(pl.LightningModule):
         loss = F.binary_cross_entropy_with_logits(
             target=x_img, input=result['x_hat'])
         if self.global_step % 100 == 0:
+            x_xhat = torch.stack((x_img[:3], result['x_hat'][:3].sigmoid()), dim=1).detach().cpu()
+            x_xhat = torch.flatten(x_xhat, start_dim=0, end_dim=1)
+            x_xhat = make_grid(x_xhat, nrow=3, normalize=True)
+            self.logger.experiment.add_image('x_xhat', x_xhat, self.global_step)
             self.log('loss/train_loss', loss, on_step=True, on_epoch=True,
                      prog_bar=True, logger=True)
         return loss

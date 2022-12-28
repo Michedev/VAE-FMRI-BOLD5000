@@ -29,7 +29,7 @@ commands:
     env_spec: default
   train-cpu:
     unix: python train.py accelerator=cpu
-    env_spec: default
+    env_spec: cpu
   compress-runs:
     unix: compress-runs = "tar cfz saved_models.tar.gz saved_models/"
     env_spec: default
