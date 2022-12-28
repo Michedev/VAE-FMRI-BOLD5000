@@ -8,6 +8,10 @@ import torchvision
 from torchvision.io import ImageReadMode
 
 
+def preprocess_fname(fname):
+    if fname.startswith('rep_'):
+        fname = fname[4:]
+    return fname
 
 class ROIDataset(Dataset):
     """Dataset class for the Region of Interest (ROI) dataset."""
@@ -28,7 +32,7 @@ class ROIDataset(Dataset):
         self.img_files_path = self.img_files_folder / f'{self.user}_stim_lists.txt'  # user order of viewed images
         with open(self.img_files_path, encoding='utf-8') as f:
             self.img_files = f.read().splitlines()
-        self.img_files = [img_list.replace('rep_COCO_train2014', 'COCO_train2014') for img_list in self.img_files if img_list]
+        self.img_files = [preprocess_fname(img_fname) for img_fname in self.img_files if img_fname]
         self.roi_folder = ROOT / Path(f'data/ROIs/{self.user.replace("0", "")}/mat')
         self.roi_files = self.roi_folder.files('*.mat')
         self.num_features, self.brain_feature_slices = self.calc_num_features(user)
