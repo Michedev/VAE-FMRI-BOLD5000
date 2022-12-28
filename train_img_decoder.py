@@ -26,7 +26,7 @@ def main(config):
     print('loaded config from checkpoint', ckpt_config_path)
     print('ckpt config', OmegaConf.to_yaml(ckpt_config), sep='\n\n')
 
-    config.decoder.input_size = ckpt_config.model.latent_size
+    config.img_decoder.input_size = ckpt_config.model.latent_size
 
     dataset_config = ckpt_config.dataset
     dataset_config['_target_'] = 'dataset.roi.ROIDatasetImage'
