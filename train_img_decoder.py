@@ -3,7 +3,7 @@ from omegaconf import OmegaConf
 from path import Path
 import pytorch_lightning as pl
 import hydra
-from model.vae import VAEImgDecoder
+from model.vae_img_decoder import VAEImgDecoder
 from torch.utils.data import DataLoader
 import torch
 from dataset.roi import ROIDataset
