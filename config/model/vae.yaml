@@ -3,12 +3,12 @@ latent_size: 100
 beta: 1.0
 encoder:
   _target_: model.encoder_decoder.vae_roi_encoder
-  input_features: ${num_features:${dataset.user}}
-  output_features: ${intprod:${model.latent_size},2}
+  input_size: ${num_features:${dataset.user}}
+  output_size: ${intprod:${model.latent_size},2}
 decoder:
   _target_: model.encoder_decoder.vae_roi_decoder
-  input_features: ${model.latent_size}
-  output_features: ${num_features:${dataset.user}}
+  input_size: ${model.latent_size}
+  output_size: ${num_features:${dataset.user}}
 opt:
   _target_: torch.optim.Adam
   _partial_: true

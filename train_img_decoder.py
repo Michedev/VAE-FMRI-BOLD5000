@@ -1,20 +1,32 @@
 import gc
-import omegaconf
+from omegaconf import OmegaConf
 from path import Path
 import pytorch_lightning as pl
 import hydra
 from model.vae import VAEImgDecoder
 from torch.utils.data import DataLoader
+import torch
+from dataset.roi import ROIDataset
+from math import prod
+
+
+OmegaConf.register_new_resolver("num_features", lambda user: ROIDataset.calc_num_features(user)[0], use_cache=True)
+OmegaConf.register_new_resolver('intprod', lambda *x: int(prod(float(el) for el in x)), use_cache=False)
 
 
 @hydra.main(config_path="config", config_name="train_img_decoder.yaml")
 def main(config):
 
+    print('config', OmegaConf.to_yaml(config), '', sep='\n\n')
+
     checkpoint_path = Path(config.checkpoint_path)
     ckpt_config_path = checkpoint_path / "config.yaml"
-    ckpt_config = omegaconf.OmegaConf.load(ckpt_config_path)
+    ckpt_config = OmegaConf.load(ckpt_config_path)
 
-    config.model = ckpt_config.model
+    print('loaded config from checkpoint', ckpt_config_path)
+    print('ckpt config', OmegaConf.to_yaml(ckpt_config), sep='\n\n')
+
+    config.decoder.input_size = ckpt_config.model.latent_size
 
     dataset_config = ckpt_config.dataset
     dataset_config['_target_'] = 'dataset.roi.ROIDatasetImage'
@@ -25,7 +37,7 @@ def main(config):
     train_dl = DataLoader(dataset, batch_size=config.batch_size, pin_memory=pin_memory)
 
     ckpt_model = hydra.utils.instantiate(ckpt_config.model)
-    ckpt_model.load_checkpoint(checkpoint_path / 'best.ckpt')
+    ckpt_model.load_state_dict(torch.load(checkpoint_path / 'best.ckpt')['state_dict'])
 
     print('Loaded model from checkpoint', checkpoint_path / 'best.ckpt')
 
@@ -34,7 +46,7 @@ def main(config):
 
     vae_img = VAEImgDecoder(ckpt_model.encoder, img_decoder, ckpt_model.latent_size, opt)
 
-    monitor_metric = 'loss/train_loss'
+    monitor_metric = 'loss/train_loss_epoch'
     storage_img_decoder = checkpoint_path / 'img_decoder'
     if not storage_img_decoder.exists():
         storage_img_decoder.mkdir()
@@ -48,3 +60,6 @@ def main(config):
     del ckpt_model
     gc.collect()
     trainer.fit(vae_img, train_dl)
+
+if __name__ == '__main__':
+    main()

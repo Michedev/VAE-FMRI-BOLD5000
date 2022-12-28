@@ -86,10 +86,11 @@ class VAEImgDecoder(pl.LightningModule):
         return mu, sigma, dist, z
 
     def training_step(self, batch, batch_idx):
-        x = batch['roi']
-        result = self.forward(x)
+        x_roi = batch['roi']
+        x_img = batch['img']
+        result = self.forward(x_roi)
         loss = F.binary_cross_entropy_with_logits(
-            target=x, input=result['x_hat'])
+            target=x_img, input=result['x_hat'])
         if self.global_step % 100 == 0:
             self.log('loss/train_loss', loss, on_step=True, on_epoch=True,
                      prog_bar=True, logger=True)
