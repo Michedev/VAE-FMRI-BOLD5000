@@ -102,7 +102,7 @@ class VAEBroadcastDecoder(nn.Module):
     def forward(self, z):
         z = z.view(*z.shape, 1, 1)
         # broadcast
-        z = z.repeat(1, 1, self.width, self.height)
+        z = z.expand(-1, -1, self.width, self.height)
         x_hat = self.decoder(z)
         return x_hat
         

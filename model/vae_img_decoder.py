@@ -54,4 +54,4 @@ class VAEImgDecoder(pl.LightningModule):
         return loss
 
     def configure_optimizers(self):
-        return self._opt(self.parameters())
+        return self._opt(self.decoder.parameters())
