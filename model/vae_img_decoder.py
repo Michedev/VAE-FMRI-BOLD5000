@@ -35,7 +35,7 @@ class VAEImgDecoder(pl.LightningModule):
         x_img = batch['img']
         result = self.forward(x_roi)
         loss = F.binary_cross_entropy_with_logits(
-            target=x_img, input=result['x_hat'])
+            target=x_img, input=result['x_hat'], reduction='none').mean(dim=0).sum()
         if self.global_step % 100 == 0:
             x_xhat = torch.stack((x_img[:3], result['x_hat'][:3].sigmoid()), dim=1).detach().cpu()
             x_xhat = torch.flatten(x_xhat, start_dim=0, end_dim=1)
