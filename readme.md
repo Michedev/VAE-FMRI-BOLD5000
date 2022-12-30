@@ -1,13 +1,6 @@
-# Deep Learning Template
+# VAE-FMRI-BOLD5000
 
-This is a template for deep learning projects based on _Pytorch, Pytorch Lightning, Anaconda-project and Hydra_.
-
-## How to initialize a new project
-
-1. Clone this repository
-2. Rename deep_learning_template to your project name in _anaconda-project.yml_ and folder name
-3. Create your model and, optionally, your dataset in _{src}/model_ and _{src}/dataset_ respectively
-
+Implementation of VAE for the fMRI dataset BOLD5000
 
 ## Install
 
@@ -19,28 +12,20 @@ git clone https://github.com/Michedev/deep-learning-template.git
 
 2. Install [anaconda](https://www.anaconda.com/) if you don't have it
 
-
-3. Open your terminal with the anaconda environment enabled in the project folder
-
-4. Install dependencies
-
-
-```bash
-anaconda-project prepare
-```
+3. In anaconda shell, download dependencies and data using `anaconda-project run download-data`
 
 ## Train
 
-Train your model
+Train the VAE to encode/decode FMRI ROIs data:
 
 ```bash
-anaconda-project run train
+anaconda-project run train-gpu
 ```
 
 You can also specify additional arguments according to `config/train.yaml` like
 
 ```bash
-anaconda-project run train accelerator=cpu  # train on cpu
+anaconda-project run train-gpu batch_size=64
 ```
 
 
